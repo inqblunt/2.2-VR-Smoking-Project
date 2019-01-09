@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class TimerScript : MonoBehaviour {
 
@@ -10,9 +11,11 @@ public class TimerScript : MonoBehaviour {
     public static bool buttonEnabled = true;
     public static float timer = 0;
     public Text timeText;
+    
+    public int score = 8000;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		// StartTimer();
 	}
 
@@ -29,17 +32,21 @@ public class TimerScript : MonoBehaviour {
         {
             timer += Time.deltaTime;
         }
-        if (timer >= 300 && secondIsStarted != true)
+        if (timer >= 3 && secondIsStarted != true)
         {
             firstIsStarted = false;
             timer = 0;
             // start second round, enable spawning and AI patterns
             secondIsStarted = true;
+            GameObject.Find("CharacterManager").GetComponent<SpawnScript>().ButtonSwitch();
         }
         if (timer >= 120 && secondIsStarted == true)
         {
             secondIsStarted = false;
             timer = 0;
+            score -= 1000 * SpawnScript.nosmokesDestroyed;
+            timeText.text = score.ToString();
+            buttonEnabled = true;
             //end game
             //display score and cleanup
             //reset game
@@ -51,6 +58,4 @@ public class TimerScript : MonoBehaviour {
         //update the label value
         timeText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
     }
-
-
 }

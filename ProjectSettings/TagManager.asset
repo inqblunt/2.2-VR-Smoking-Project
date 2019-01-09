@@ -6,6 +6,11 @@ TagManager:
   tags:
   - starter
   - hands
+  - smarea
+  - destin
+  - spawn
+  - nosmoke
+  - smoke
   layers:
   - Default
   - TransparentFX
@@ -16,7 +21,7 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
+  - Background
   - 
   - 
   - 
