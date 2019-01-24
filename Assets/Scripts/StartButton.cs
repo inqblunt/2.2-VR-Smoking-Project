@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StartButton : MonoBehaviour {
 
@@ -11,18 +12,19 @@ public class StartButton : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown("space"))
+		if (Input.GetKeyDown("space") && TimerScript.buttonEnabled == true)
         {
             TimerScript.StartTimer();
+        }
+        if (OVRInput.Get(OVRInput.Button.Start, OVRInput.Controller.Touch) == true && TimerScript.buttonEnabled == true && TimerScript.flush != true)
+        {
+            TimerScript.StartTimer();
+        }
+        if (OVRInput.Get(OVRInput.Button.Start, OVRInput.Controller.Touch) == true && TimerScript.buttonEnabled == true && TimerScript.flush == true)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            TimerScript.flush = false;
         }
 	}
 
-    /*private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "starter")
-        {
-            TimerScript.StartTimer();
-        }
-
-    }*/
 }

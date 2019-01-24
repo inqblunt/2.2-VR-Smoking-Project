@@ -9,7 +9,8 @@ public class SmokeColl : MonoBehaviour {
     {
         if (other.tag == "nosmoke")
         {
-            NosmokeMovementScript.smokeStack++;
+            TimerScript.score -= 100;
+            Debug.Log("Hit");
         }
     }
 }

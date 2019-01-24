@@ -13,4 +13,23 @@ public class SmokingAreasScript : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.tag == "smoke")
+        {
+            TimerScript.isSmoking--;
+            SmokeMovementScript.inBox = true;
+            Debug.Log("smokeinbox");
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.tag == "smoke")
+        {
+            TimerScript.isSmoking--;
+            SmokeMovementScript.inBox = false;
+        }
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class SpawnScript : MonoBehaviour {
 
-    public float spawnTime = 3f;
+    public float spawnTime = 10f;
     public int spawnCount = 0;
     public GameObject smoke;
     public GameObject nosmoke;
@@ -32,18 +32,18 @@ public class SpawnScript : MonoBehaviour {
             //Debug.Log(spawnPoints[i]);
         }
 
-        GameObject.Find("SmallCube").GetComponent<Collider>().enabled = false;
-        GameObject.Find("SmallCube").GetComponent<Rigidbody>().useGravity = false;
-        GameObject.Find("SmallCube2").GetComponent<Collider>().enabled = false;
-        GameObject.Find("BigCube").GetComponent<Collider>().enabled = false;
-        GameObject.Find("BigCube2").GetComponent<Collider>().enabled = false;
         GameObject.Find("Area 1").GetComponent<Collider>().enabled = false;
         GameObject.Find("Area 2").GetComponent<Collider>().enabled = false;
-        GameObject.Find("SmallCube2").GetComponent<Rigidbody>().useGravity = false;
-        GameObject.Find("BigCube").GetComponent<Rigidbody>().useGravity = false;
-        GameObject.Find("BigCube2").GetComponent<Rigidbody>().useGravity = false;
+        GameObject.Find("Warden").GetComponent<Collider>().enabled = false;
+        GameObject.Find("Warden1").GetComponent<Collider>().enabled = false;
+        GameObject.Find("Warden").GetComponent<Rigidbody>().useGravity = false;
+        GameObject.Find("Warden1").GetComponent<Rigidbody>().useGravity = false;
+        GameObject.Find("Warden").GetComponent<OVRGrabbable>().enabled = false;
+        GameObject.Find("Warden1").GetComponent<OVRGrabbable>().enabled = false;
         GameObject.Find("Area 1").GetComponent<Rigidbody>().useGravity = false;
         GameObject.Find("Area 2").GetComponent<Rigidbody>().useGravity = false;
+        GameObject.Find("Area 1").GetComponent<OVRGrabbable>().enabled = false;
+        GameObject.Find("Area 2").GetComponent<OVRGrabbable>().enabled = false;
 
         surface.BuildNavMesh();
         InvokeRepeating("Spawn", spawnTime, spawnTime);
@@ -51,17 +51,22 @@ public class SpawnScript : MonoBehaviour {
 
     void Spawn ()
     {
-        if (spawnCount >= 8)
+        if (spawnCount >= 16)
         {
             return;
         }
         int spawnPointIndex = Random.Range(0, spawnPoints.Length);
 
-        Debug.Log(spawnPoints[spawnPointIndex].position);
-        var newNosmoke = Instantiate(nosmoke, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
-        newNosmoke.transform.SetParent(GameObject.Find("CharacterManager").transform, false);
+        //Debug.Log(spawnPoints[spawnPointIndex].position);
+       // newNosmoke.transform.SetParent(GameObject.Find("CharacterManager").transform, false);
+       if (spawnCount % 4 == 0) { 
         var newSmoke = Instantiate(smoke, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
-        newSmoke.transform.SetParent(GameObject.Find("CharacterManager").transform, false);
+       }
+       else
+        {
+            var newSmoke = Instantiate(smoke, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+        }
+        // newSmoke.transform.SetParent(GameObject.Find("CharacterManager").transform, false);
 
         spawnCount++;
     }

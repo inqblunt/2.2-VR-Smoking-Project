@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.AI;
 
 public class TimerScript : MonoBehaviour {
 
@@ -11,19 +10,41 @@ public class TimerScript : MonoBehaviour {
     public static bool buttonEnabled = true;
     public static float timer = 0;
     public Text timeText;
+    public Slider scoreSlider;
+    static bool updateLabel = true;
+
+    public static int isSmoking = 0;
     
-    public int score = 8000;
+    public static int score = 8000;
+
+    int updateCounter = 0;
+
+    public static bool flush = false;
+    static bool endMusicPlay = false;
+
+    public AudioClip TimeClip;
+    public AudioSource SoundSource;
+    public AudioClip ScoreClip;
+    public AudioSource ScoreSource;
+    public AudioSource EndSource;
+    public AudioClip EndClip;
 
     // Use this for initialization
     void Start () {
-		// StartTimer();
-	}
+        // StartTimer();
+        SoundSource.clip = TimeClip;
+        ScoreSource.clip = ScoreClip;
+        EndSource.clip = EndClip;
+    }
 
     public static void StartTimer ()
     {
         // player starts building phase
         firstIsStarted = true;
+        updateLabel = true;
         buttonEnabled = false; // disables starting button 
+        GameObject.Find("NavMesh").SetActive(true);
+        endMusicPlay = false;
     }
 	
 	// Update is called once per frame
@@ -32,7 +53,7 @@ public class TimerScript : MonoBehaviour {
         {
             timer += Time.deltaTime;
         }
-        if (timer >= 3 && secondIsStarted != true)
+        if (timer >= 1 && secondIsStarted != true)
         {
             firstIsStarted = false;
             timer = 0;
@@ -40,22 +61,58 @@ public class TimerScript : MonoBehaviour {
             secondIsStarted = true;
             GameObject.Find("CharacterManager").GetComponent<SpawnScript>().ButtonSwitch();
         }
-        if (timer >= 120 && secondIsStarted == true)
+        if ((timer >= 60 && secondIsStarted == true) || score <= 0)
         {
+            if (endMusicPlay == false)
+            {
+                EndSource.Play();
+                endMusicPlay = true;
+            }
+            isSmoking = 0;
             secondIsStarted = false;
+            updateLabel = false;
             timer = 0;
-            score -= 1000 * SpawnScript.nosmokesDestroyed;
-            timeText.text = score.ToString();
+            if (score < 0)
+            {
+                score = 0;
+            }
+            timeText.text = "Final Score: " + score.ToString();
             buttonEnabled = true;
+            GameObject.Find("NavMesh").SetActive(false);
+            flush = true;
             //end game
             //display score and cleanup
             //reset game
         }
         var minutes = timer / 60; //Divide the guiTime by sixty to get the minutes.
         var seconds = timer % 60;//Use the euclidean division for the seconds.
-        var fraction = (timer * 100) % 100;
-
+        scoreSlider.value = score;
         //update the label value
-        timeText.text = string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, fraction);
+        if (updateLabel == true) {
+            timeText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+            //SoundSource.Play();
+        }
+            //Debug.Log(isSmoking);
     }
+
+    private void FixedUpdate()
+    {
+        updateCounter++;
+
+        if (updateCounter % 50 == 0 && secondIsStarted == true)
+        {
+            int toLose = 100 * isSmoking;
+            if (toLose > 0)
+            {
+                ScoreSource.Play();
+            }
+            if (secondIsStarted == true)
+            {
+                SoundSource.Play();
+            }
+            score -= toLose;
+            
+        }
+    }
+        
 }
